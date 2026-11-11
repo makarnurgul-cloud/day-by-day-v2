@@ -1,10 +1,20 @@
 import type { NextConfig } from "next";
 
+const isGithubActions = process.env.GITHUB_ACTIONS || false;
+
+let repo = "";
+if (isGithubActions && process.env.GITHUB_REPOSITORY) {
+  repo = process.env.GITHUB_REPOSITORY.replace(/.*?\//, "");
+}
+
 const nextConfig: NextConfig = {
   output: "export",
-  basePath: "/day-by-day-v2",
-  images: { unoptimized: true },
-  trailingSlash: true,
+  basePath: repo ? `/${repo}` : "",
+  assetPrefix: repo ? `/${repo}/` : "",
+  trailingSlash: true, // МІНСІЗ КӨМЕКТЕСЕДІ (ішкі беттердің стилі үшін)
+  images: {
+    unoptimized: true,
+  },
 };
 
 export default nextConfig;
