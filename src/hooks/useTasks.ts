@@ -7,20 +7,16 @@ import { useAuth } from "@/components/AuthProvider";
 export function useTasks(from: string, to: string) {
   const { user } = useAuth();
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false); // <--- Бастапқы мәнін false етейік
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
-    if (!user) {
-      setLoading(false); // <--- Осы жерді қосу қажет
-      return;
-    }
     const { data, error } = await supabase.from("tasks").select("*")
       .gte("day", from).lte("day", to).order("created_at");
     if (error) setError(error.message);
     else setTasks(data as Task[] || []);
     setLoading(false);
-  }, [user, from, to]);
+  }, [from, to]);
 
   useEffect(() => {
     load();
