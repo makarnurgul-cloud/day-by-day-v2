@@ -29,7 +29,7 @@ export default function LoginPage() {
     } else {
       const { data, error } = await supabase.auth.signUp({ email, password, options: { data: { name: name.trim() } } });
       if (error) setError(error.message);
-      else if (!data.session) setInfo("Поштаңа растау хаты жіберілді. Растап, кейін кір.");
+      else if (!data.session) setInfo("Поштаңа растау хаты жіберілді. Растап, кейін кіріңіз.");
     }
     setBusy(false);
   };
