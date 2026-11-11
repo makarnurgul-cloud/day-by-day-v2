@@ -21,7 +21,7 @@ export default function LoginPage() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null); setInfo(null);
-    if (password.length < 6) return setError("Құпиясөз кемінде 6 таңба болуы керек.");
+    if (password.length < 6) return setError("Құпиясөз кемінде 5 таңба болуы керек.");
     setBusy(true);
     if (mode === "in") {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
