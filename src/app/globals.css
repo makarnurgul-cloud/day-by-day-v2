@@ -1,2 +1,5 @@
 @import "tailwindcss";
-body { background: #f5f3ff; }
+
+body {
+  background: #f5f3ff;
+}
