@@ -10,7 +10,7 @@ import { errBox } from "@/lib/ui";
 export default function Home() {
   const name = "Nurgul";
   const d = today();
-  const { tasks, error, add, toggle, remove } = useTasks(d, d);
+  const { tasks, loading, error, add, toggle, remove } = useTasks(d, d);
   const done = tasks.filter((t) => t.done).length;
 
   return (
@@ -33,7 +33,13 @@ export default function Home() {
 
       <section className="space-y-4">
         <h2 className="text-lg font-semibold">Бүгінгі тапсырмалар</h2>
-       <TaskList tasks={tasks} loading={loading} error={error} onToggle={toggle} onRemove={remove} />
+        <TaskList 
+          tasks={tasks} 
+          loading={loading} 
+          error={error} 
+          onToggle={toggle} 
+          onRemove={remove} 
+        />
         <AddTask onAdd={(title, roomId) => add(title, roomId, d)} />
         {error && <p className={errBox}>{error}</p>}
       </section>
