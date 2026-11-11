@@ -1,25 +1,36 @@
 "use client";
 import { createContext, useContext, useEffect, useState } from "react";
-import type { User } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
+import { User } from "@supabase/supabase-js";
 
-type Ctx = { user: User | null; name: string; loading: boolean };
-const AuthCtx = createContext<Ctx>({ user: null, name: "", loading: true });
-export const useAuth = () => useContext(AuthCtx);
+interface AuthContextType {
+  user: User | null;
+  loading: boolean;
+}
 
-export default function AuthProvider({ children }: { children: React.ReactNode }) {
+const AuthContext = createContext<AuthContextType>({ user: null, loading: false });
+
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false); // <--- Жүктелуді кешіктірмес үшін false етіп қоямыз
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setUser(data.session?.user ?? null);
-      setLoading(false);
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
     });
-    const { data } = supabase.auth.onAuthStateChange((_e, session) => setUser(session?.user ?? null));
-    return () => data.subscription.unsubscribe();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const name = (user?.user_metadata?.name as string) || user?.email?.split("@")[0] || "";
-  return <AuthCtx.Provider value={{ user, name, loading }}>{children}</AuthCtx.Provider>;
+  return (
+    <AuthContext.Provider value={{ user, loading }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
+
+export const useAuth = () => useContext(AuthContext);

@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useAuth } from "./AuthProvider";
 import { card } from "@/lib/ui";
+import { supabase } from "@/lib/supabase";
 
 const NAV = [
   ["/", "Басты бет", "🏠"], ["/tasks", "Тапсырмалар", "✅"], ["/calendar", "Күнтізбе", "📅"],
@@ -15,15 +16,19 @@ export default function Shell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const path = usePathname();
 
-  useEffect(() => {
-    if (!loading && !user) router.replace("/login");
-  }, [loading, user, router]);
+ 
 
   if (loading || !user)
     return <div className="grid min-h-screen place-items-center text-violet-400">Жүктелуде…</div>;
 
   const active = (h: string) => (h === "/" ? path === "/" : path.startsWith(h));
-
+  useEffect(() => {
+    if (loading || user) return;
+    // Сессия шынымен жоқ екенін растап барып қана /login-ге жібереміз
+    supabase.auth.getSession().then(({ data }) => {
+      if (!data.session) router.replace("/login");
+    });
+  }, [loading, user, router]);
   return (
     <div className="mx-auto flex min-h-screen max-w-6xl gap-6 p-3 pb-24 md:p-6 md:pb-6">
       <aside className="hidden w-60 shrink-0 md:block">
