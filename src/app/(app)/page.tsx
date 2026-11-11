@@ -33,13 +33,7 @@ export default function Home() {
 
       <section className="space-y-4">
         <h2 className="text-lg font-semibold">Бүгінгі тапсырмалар</h2>
-        <TaskList 
-          tasks={tasks} 
-          loading={loading} 
-          error={error} 
-          onToggle={toggle} 
-          onRemove={remove} 
-        />
+        <TaskList tasks={tasks} />
         <AddTask onAdd={(title, roomId) => add(title, roomId, d)} />
         {error && <p className={errBox}>{error}</p>}
       </section>
