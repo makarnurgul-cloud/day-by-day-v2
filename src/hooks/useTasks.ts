@@ -12,7 +12,7 @@ export function useTasks(from: string, to: string) {
 
   const load = useCallback(async () => {
     if (!user) {
-      setLoading(false); // <--- ҚОСУ КЕРЕК: user жоқ болса да жүктелуді тоқтату
+      setLoading(false); // <--- Осы жерді қосу қажет
       return;
     }
     const { data, error } = await supabase.from("tasks").select("*")
